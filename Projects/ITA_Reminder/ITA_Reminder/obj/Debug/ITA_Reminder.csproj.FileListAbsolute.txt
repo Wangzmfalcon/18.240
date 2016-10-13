@@ -1,0 +1,8 @@
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\bin\Debug\ITA_Reminder.exe
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\bin\Debug\ITA_Reminder.pdb
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\obj\Debug\ITA_Reminder.csprojResolveAssemblyReference.cache
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\obj\Debug\ITA_Reminder.Form1.resources
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\obj\Debug\ITA_Reminder.Properties.Resources.resources
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\obj\Debug\ITA_Reminder.csproj.GenerateResource.Cache
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\obj\Debug\ITA_Reminder.exe
+c:\users\itdwzm\documents\visual studio 2013\Projects\ITA_Reminder\ITA_Reminder\obj\Debug\ITA_Reminder.pdb
