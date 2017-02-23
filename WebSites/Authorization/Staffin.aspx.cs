@@ -15,10 +15,13 @@ using System.Drawing;
 using System.IO;
 using System.Data.SqlClient;
 using System.Runtime.InteropServices;//外部引用
+using SMS.DBUtility;
+using Aspose.Cells;//excel
 
 public partial class Staffin : System.Web.UI.Page
 {
     GridView gv = new GridView();
+    DataTable dt = new DataTable();
     //杀EXCEL
     //[DllImport("User32.dll", CharSet = CharSet.Auto)]
     //public static extern int GetWindowThreadProcessId(IntPtr hwnd, out int ID);
@@ -26,7 +29,7 @@ public partial class Staffin : System.Web.UI.Page
     //private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
     //[DllImport("kernel32")]
     //private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
-   
+
     DataTable download = new DataTable();
     string sqlstr = ConfigurationManager.ConnectionStrings["ConnectionString1"].ConnectionString;
     protected void Page_Load(object sender, EventArgs e)
@@ -68,7 +71,7 @@ public partial class Staffin : System.Web.UI.Page
             using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
             {
                 sqlcmm.CommandText = "select a.Station as Station2 from MSAS_Station a order by a.Station ";
-                DataTable dt = new DataTable();
+                //DataTable dt = new DataTable();
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlcmm);
 
                 adapter.SelectCommand.CommandType = CommandType.Text;
@@ -167,7 +170,7 @@ public partial class Staffin : System.Web.UI.Page
         {
             using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
             {
-                sqlcmm.CommandText = "select Seq,StaffID,StaffName,Station,Department,Division,Title,License,(DATENAME(dd,DateOfJoin)+'-'+SUBSTRING(DATENAME(mm,DateOfJoin),0,4)+'-'+DATENAME(yyyy,DateOfJoin) )AS DateofJoin,(DATENAME(dd,LicenseExpired)+'-'+SUBSTRING(DATENAME(mm,LicenseExpired),0,4)+'-'+DATENAME(yyyy,LicenseExpired) )AS LicenseExpired,HRstatus,category,notJMM,(DATENAME(dd,DateOfLeft)+'-'+SUBSTRING(DATENAME(mm,DateOfLeft),0,4)+'-'+DATENAME(yyyy,DateOfLeft) )AS DateOfLeft,(DATENAME(dd,Brithdate)+'-'+SUBSTRING(DATENAME(mm,Brithdate),0,4)+'-'+DATENAME(yyyy,Brithdate)) AS Brithdate from MSAS_HRInfo";
+                sqlcmm.CommandText = "select Seq,StaffID,StaffName,Station,Department,Division,Title,License,(DATENAME(dd,DateOfJoin)+'-'+SUBSTRING(DATENAME(mm,DateOfJoin),0,4)+'-'+DATENAME(yyyy,DateOfJoin) )AS DateofJoin,(DATENAME(dd,LicenseExpired)+'-'+SUBSTRING(DATENAME(mm,LicenseExpired),0,4)+'-'+DATENAME(yyyy,LicenseExpired) )AS LicenseExpired,HRstatus,category,notJMM,(DATENAME(dd,DateOfLeft)+'-'+SUBSTRING(DATENAME(mm,DateOfLeft),0,4)+'-'+DATENAME(yyyy,DateOfLeft) )AS DateOfLeft,(DATENAME(dd,Birthdate)+'-'+SUBSTRING(DATENAME(mm,Birthdate),0,4)+'-'+DATENAME(yyyy,Birthdate)) AS Birthdate from MSAS_HRInfo order by StaffID";
                 DataTable dt = new DataTable();
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlcmm);
                 adapter.Fill(dt);
@@ -190,7 +193,7 @@ public partial class Staffin : System.Web.UI.Page
         datejo.Text = "";
         LisenceEx1.Text = "";
         Lisen.Text = "";
-        
+
         Depart.Items.Clear();
         Divis.Items.Clear();
         Titl.Items.Clear();
@@ -293,81 +296,108 @@ public partial class Staffin : System.Web.UI.Page
     }//向数据库添加数据
     public void finish(object sender, EventArgs e)
     {
-                    using (SqlConnection sqlcnn = new SqlConnection(sqlstr))
+        using (SqlConnection sqlcnn = new SqlConnection(sqlstr))
+        {
+            using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
+            {
+                string uid = stano.Text;
+                sqlcmm.CommandText = "select * from MSAS_HRInfo where StaffID ='" + uid + "'";
+                DataTable dt = new DataTable();
+                SqlDataAdapter adapter = new SqlDataAdapter(sqlcmm);
+                adapter.Fill(dt);
+                if (dt.Rows.Count != 0)
+                {
+                    ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('staffNo exist');</script>");
+                    GetData();
+                }
+                else
+                {
+                    DataSet ds = new DataSet();//实例化内存数据库ds 
+                    SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString1"].ConnectionString);//创建数据库连接对象
+                    SqlCommand insertCmd = new SqlCommand("insert into MSAS_HRInfo  (StaffID,StaffName,Department,Division,Station,Title,DateOfJoin,License,Category,notJMM,LicenseExpired,DateOfLeft,HRstatus,Birthdate)values(@StaffID,@StaffName,@Department,@Division,@Station,@Title,@DateOfJoin,@License,@Category,@notJMM,@LicenseExpired,@DateOfLeft,@HRstatus,@Birthdate)", cn);
+                    insertCmd.Parameters.Add("@DateOfJoin", SqlDbType.DateTime);
+                    insertCmd.Parameters.Add("@LicenseExpired", SqlDbType.DateTime);
+                    insertCmd.Parameters.Add("@StaffID", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@StaffName", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@Department", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@Division", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@Station", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@Title", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@License", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@HRstatus", SqlDbType.Bit);
+                    insertCmd.Parameters.Add("@Category", SqlDbType.VarChar, 50);
+                    insertCmd.Parameters.Add("@DateOfLeft", SqlDbType.DateTime);
+                    insertCmd.Parameters.Add("@notJMM", SqlDbType.Bit);
+                    insertCmd.Parameters.Add("@Birthdate", SqlDbType.DateTime);
+
+                    insertCmd.Parameters["@StaffID"].Value = stano.Text;
+                    insertCmd.Parameters["@StaffName"].Value = nam.Text;
+                    insertCmd.Parameters["@DateOfJoin"].Value = IsNull(datejo.Text);
+                    insertCmd.Parameters["@LicenseExpired"].Value = IsNull(LisenceEx1.Text);
+                    insertCmd.Parameters["@License"].Value = Lisen.Text;
+                    insertCmd.Parameters["@Department"].Value = Depart.Text;
+                    insertCmd.Parameters["@Station"].Value = Dropdownlist1.Text;
+                    insertCmd.Parameters["@Division"].Value = Divis.Text;
+                    insertCmd.Parameters["@Title"].Value = Titl.Text;
+                    insertCmd.Parameters["@Category"].Value = Categoryin.Text;
+                    insertCmd.Parameters["@HRStatus"].Value = false;
+                    insertCmd.Parameters["@notJMM"].Value = checknotjmm.Checked;
+                    insertCmd.Parameters["@DateOfLeft"].Value = DBNull.Value;
+                    insertCmd.Parameters["@Birthdate"].Value = IsNull(Birthdate.Text);
+                    try
                     {
-                        using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
+                        cn.Open();
+                        int flag = insertCmd.ExecuteNonQuery();
+                        if (flag > 0)
                         {
-                            string uid = stano.Text;
-                            sqlcmm.CommandText = "select * from MSAS_HRInfo where StaffID ='" + uid + "'";
-                            DataTable dt = new DataTable();
-                            SqlDataAdapter adapter = new SqlDataAdapter(sqlcmm);
-                            adapter.Fill(dt);
-                            if (dt.Rows.Count != 0)
-                            {
-                                ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('staffNo exist');</script>");
-                                GetData();
-                            }
-                            else
-                            {
-                                DataSet ds = new DataSet();//实例化内存数据库ds 
-                                SqlConnection cn = new SqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString1"].ConnectionString);//创建数据库连接对象
-                                SqlCommand insertCmd = new SqlCommand("insert into MSAS_HRInfo values(@StaffID,@StaffName,@Department,@Division,@Station,@Title,@DateOfJoin,@License,@Category,@notJMM,@LicenseExpired,@DateOfLeft,@HRstatus,@Birthdate)", cn);
-                                insertCmd.Parameters.Add("@DateOfJoin", SqlDbType.DateTime);
-                                insertCmd.Parameters.Add("@LicenseExpired", SqlDbType.DateTime);
-                                insertCmd.Parameters.Add("@StaffID", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@StaffName", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@Department", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@Division", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@Station", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@Title", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@License", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@HRstatus", SqlDbType.Bit);
-                                insertCmd.Parameters.Add("@Category", SqlDbType.VarChar, 50);
-                                insertCmd.Parameters.Add("@DateOfLeft", SqlDbType.DateTime);
-                                insertCmd.Parameters.Add("@notJMM", SqlDbType.Bit);
-                                insertCmd.Parameters.Add("@Birthdate", SqlDbType.DateTime);
-                                
-                                insertCmd.Parameters["@StaffID"].Value = stano.Text;
-                                insertCmd.Parameters["@StaffName"].Value = nam.Text;
-                                insertCmd.Parameters["@DateOfJoin"].Value = IsNull(datejo.Text);
-                                insertCmd.Parameters["@LicenseExpired"].Value = IsNull(LisenceEx1.Text);
-                                insertCmd.Parameters["@License"].Value = Lisen.Text;
-                                insertCmd.Parameters["@Department"].Value = Depart.Text;
-                                insertCmd.Parameters["@Station"].Value = Dropdownlist1.Text;
-                                insertCmd.Parameters["@Division"].Value = Divis.Text;
-                                insertCmd.Parameters["@Title"].Value = Titl.Text;
-                                insertCmd.Parameters["@Category"].Value = Categoryin.Text;
-                                insertCmd.Parameters["@HRStatus"].Value = false;
-                                insertCmd.Parameters["@notJMM"].Value = checknotjmm.Checked;
-                                insertCmd.Parameters["@DateOfLeft"].Value = DBNull.Value;
-                                insertCmd.Parameters["@Birthdate"].Value = IsNull(Birthdate.Text);
-                                try
-                                {
-                                    cn.Open();
-                                    int flag = insertCmd.ExecuteNonQuery();
-                                    if (flag > 0)
-                                    {
-                                        //  Page.ClientScript.RegisterStartupScript(Page.GetType(), "msg", "<script type=\"text/javascript\">function ShowAlert(){alert('dd');}window.onload=ShowAlert;</script>");
-                                        ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('success');</script>");
-                                        GetData();
-                                    }
-                                    else
+                            //  Page.ClientScript.RegisterStartupScript(Page.GetType(), "msg", "<script type=\"text/javascript\">function ShowAlert(){alert('dd');}window.onload=ShowAlert;</script>");
+                            ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('success');</script>");
+                            GetData();
+                        }
+                        else
 
 
-                                        ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('fail');</script>");
+                            ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('fail');</script>");
 
 
-                                }
-                                catch (Exception ex)
-                                {
-                                    ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('error');</script>");
-                                }
+                    }
+                    catch (Exception ex)
+                    {
+                        ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('error');</script>");
+                    }
 
-                                finally
-                                {
-                                    cn.Close();
-                                }
-                            } 
+                    finally
+                    {
+                        cn.Close();
+                    }
+                }
+            }
+        }
+
+
+        //插入Position
+
+        string SQL_insert = "  INSERT INTO  MSAS_Position_S (StaffID,Position) values (@StaffID,@Position)";
+
+        SqlParameter[] parms = new SqlParameter[]{
+                     new SqlParameter("@StaffID",  SqlDbType.VarChar, 50),
+                     new SqlParameter("@Position", SqlDbType.VarChar, 50)
+      
+               };
+        parms[0].Value = stano.Text;
+        parms[1].Value = "Other ENM Staff";
+        using (SqlConnection conn = new SqlConnection(SqlHelper1.Conn))
+        {
+            int actionrows = SqlHelper.ExecuteNonQuery(conn, CommandType.Text, SQL_insert, parms);
+            if (actionrows > 0)
+            {
+                // ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('Insert data success');</script>");
+
+
+            }
+            else
+            {
+                // ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('Insert data faild');</script>");
             }
         }
     }
@@ -399,12 +429,12 @@ public partial class Staffin : System.Web.UI.Page
     }
     protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-        
+
         if (((DropDownList)e.Row.FindControl("Department")) != null)
         {
             DropDownList DropDownList1 = (DropDownList)e.Row.FindControl("Department");
             DropDownList1.Items.Clear();
-            
+
 
             using (SqlConnection sqlcnn = new SqlConnection(sqlstr))
             {
@@ -432,9 +462,9 @@ public partial class Staffin : System.Web.UI.Page
                         string haveimg = drv["Department"].ToString();
                         DropDownList1.SelectedValue = haveimg;
                     }
-                      //  string a = lb.Text;
+                    //  string a = lb.Text;
 
-                    
+
                 }
             }
 
@@ -653,12 +683,12 @@ public partial class Staffin : System.Web.UI.Page
         string licenseEx = (GridView1.Rows[e.RowIndex].FindControl("TextBox9") as TextBox).Text;
         string DateOfLeft = (GridView1.Rows[e.RowIndex].FindControl("TextBoxDateOfLeft") as TextBox).Text;
         bool HRs = (GridView1.Rows[e.RowIndex].FindControl("CheckBox12") as CheckBox).Checked;
-        string DateOfBirth = (GridView1.Rows[e.RowIndex].FindControl("TextBrithdate") as TextBox).Text;
+        string DateOfBirth = (GridView1.Rows[e.RowIndex].FindControl("TextBirthdate") as TextBox).Text;
         using (SqlConnection sqlcnn = new SqlConnection(sqlstr))
         {
             using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
             {
-                sqlcmm.CommandText = "update MSAS_HRInfo set StaffID=@StaffID,StaffName=@StaffName,Department=@Department,Division=@Division,Station=@Station,Title=@Title,DateOfJoin=@DateOfJoin,License=@License,LicenseExpired=@LicenseExpired,HRStatus=@HRStatus ,category=@category,notJMM=@notJMM,DateOfLeft=@DateOfLeft,Brithdate=@Brithdate  where Seq=@id";
+                sqlcmm.CommandText = "update MSAS_HRInfo set StaffID=@StaffID,StaffName=@StaffName,Department=@Department,Division=@Division,Station=@Station,Title=@Title,DateOfJoin=@DateOfJoin,License=@License,LicenseExpired=@LicenseExpired,HRStatus=@HRStatus ,category=@category,notJMM=@notJMM,DateOfLeft=@DateOfLeft,Birthdate=@Birthdate  where Seq=@id";
                 sqlcmm.Parameters.AddWithValue("@StaffID", staffno);
                 sqlcmm.Parameters.AddWithValue("@id", Convert.ToInt32((GridView1.Rows[e.RowIndex].FindControl("Label1") as Label).Text));
                 sqlcmm.Parameters.AddWithValue("@StaffName", staffname);
@@ -673,7 +703,7 @@ public partial class Staffin : System.Web.UI.Page
                 sqlcmm.Parameters.AddWithValue("@category", category);
                 sqlcmm.Parameters.AddWithValue("@notJMM", JMM);
                 sqlcmm.Parameters.AddWithValue("@DateOfLeft", IsNull(DateOfLeft));
-                sqlcmm.Parameters.AddWithValue("@Brithdate", IsNull(DateOfBirth));
+                sqlcmm.Parameters.AddWithValue("@Birthdate", IsNull(DateOfBirth));
                 sqlcnn.Open();
                 int i = sqlcmm.ExecuteNonQuery();
                 if (i > 0)
@@ -699,7 +729,7 @@ public partial class Staffin : System.Web.UI.Page
     //空值检查
     public object IsNull(object item)
     {
-        if (Equals(Convert.ToString(item),""))
+        if (Equals(Convert.ToString(item), ""))
         {
             return DBNull.Value;
         }
@@ -715,14 +745,14 @@ public partial class Staffin : System.Web.UI.Page
         {
             using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
             {
-                sqlcmm.CommandText = "select Seq,StaffID,StaffName,category,Department,Division,Station,Title,License,(DATENAME(dd,DateOfJoin)+'-'+SUBSTRING(DATENAME(mm,DateOfJoin),0,4)+'-'+DATENAME(yyyy,DateOfJoin) )AS DateofJoin,(DATENAME(dd,LicenseExpired)+'-'+SUBSTRING(DATENAME(mm,LicenseExpired),0,4)+'-'+DATENAME(yyyy,LicenseExpired) )AS LicenseExpired,HRstatus,notJMM,(DATENAME(dd,DateOfLeft)+'-'+SUBSTRING(DATENAME(mm,DateOfLeft),0,4)+'-'+DATENAME(yyyy,DateOfLeft) )AS DateOfLeft,(DATENAME(dd,Brithdate)+'-'+SUBSTRING(DATENAME(mm,Brithdate),0,4)+'-'+DATENAME(yyyy,Brithdate)) AS Brithdate from MSAS_HRInfo where StaffID like @StaffID and StaffName like @StaffName and Department like @Department and Division =(case when @Division=''then Division else @Division end) and Title =(case when @Title=''then Title else @Title end) and License like @License and Station =(case when @Station=''then Station else @Station end) and category =(case when @category=''then category else @category end) and (notJMM = @notJMM or notJMM = @notJMM1) and (HRstatus=@HRstatus or HRstatus=@HRstatus1)";
+                sqlcmm.CommandText = "select Seq,StaffID,StaffName,category,Department,Division,Station,Title,License,(DATENAME(dd,DateOfJoin)+'-'+SUBSTRING(DATENAME(mm,DateOfJoin),0,4)+'-'+DATENAME(yyyy,DateOfJoin) )AS DateofJoin,(DATENAME(dd,LicenseExpired)+'-'+SUBSTRING(DATENAME(mm,LicenseExpired),0,4)+'-'+DATENAME(yyyy,LicenseExpired) )AS LicenseExpired,HRstatus,notJMM,(DATENAME(dd,DateOfLeft)+'-'+SUBSTRING(DATENAME(mm,DateOfLeft),0,4)+'-'+DATENAME(yyyy,DateOfLeft) )AS DateOfLeft,(DATENAME(dd,Birthdate)+'-'+SUBSTRING(DATENAME(mm,Birthdate),0,4)+'-'+DATENAME(yyyy,Birthdate)) AS Birthdate from MSAS_HRInfo where StaffID like @StaffID and StaffName like @StaffName and Department like @Department and Division =(case when @Division=''then Division else @Division end) and Title =(case when @Title=''then Title else @Title end) and License like @License and Station =(case when @Station=''then Station else @Station end) and category =(case when @category=''then category else @category end) and (notJMM = @notJMM or notJMM = @notJMM1) and (HRstatus=@HRstatus or HRstatus=@HRstatus1)  order by StaffID";
                 sqlcmm.Parameters.AddWithValue("@StaffID", "%" + this.txtName.Text + "%");
                 sqlcmm.Parameters.AddWithValue("@StaffName", "%" + this.tname.Text + "%");
                 sqlcmm.Parameters.AddWithValue("@Department", "%" + this.tdepart.SelectedValue + "%");
-                sqlcmm.Parameters.AddWithValue("@Division",  this.tdivi.SelectedValue);
-                sqlcmm.Parameters.AddWithValue("@Station",  this.station.SelectedValue );
-                sqlcmm.Parameters.AddWithValue("@Title",  this.ttitle.SelectedValue );
-                sqlcmm.Parameters.AddWithValue("@category",  this.tcate.SelectedValue );
+                sqlcmm.Parameters.AddWithValue("@Division", this.tdivi.SelectedValue);
+                sqlcmm.Parameters.AddWithValue("@Station", this.station.SelectedValue);
+                sqlcmm.Parameters.AddWithValue("@Title", this.ttitle.SelectedValue);
+                sqlcmm.Parameters.AddWithValue("@category", this.tcate.SelectedValue);
                 sqlcmm.Parameters.AddWithValue("@License", "%" + this.tlicen.Text + "%");
                 if (tjmm.SelectedValue == "Yes")
                 {
@@ -756,7 +786,7 @@ public partial class Staffin : System.Web.UI.Page
                 }
                 sqlcnn.Open();
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlcmm);
-                DataTable dt = new DataTable();
+                //DataTable dt = new DataTable();
                 adapter.Fill(dt);
                 this.GridView1.DataSource = dt;
                 this.GridView1.DataBind();
@@ -772,50 +802,213 @@ public partial class Staffin : System.Web.UI.Page
     {
         GetData1();
     }
+    //protected void downloadlink(object sender, EventArgs e)
+    //{
+
+    //    //Response.Charset = "GB2312";
+    //    //Response.ContentEncoding = System.Text.Encoding.UTF8;
+    //    //Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("Employee.xls", Encoding.UTF8).ToString());
+    //    //Response.ContentType = "application/ms-excel";
+    //    //this.EnableViewState = false;
+    //    //StringWriter tw = new StringWriter();
+    //    //HtmlTextWriter hw = new HtmlTextWriter(tw);
+    //    //GridView1.RenderControl(hw);
+    //    //Response.Write(tw.ToString());
+    //    //Response.End();
+
+    //    GridView1.AllowPaging = false;
+    //    GetData1();
+
+    //    string strStyle = "<style>td{mso-number-format:\"\\@\";}</style>";
+    //    Response.Charset = "GB2312";
+    //    Response.ContentEncoding = System.Text.Encoding.UTF8;
+    //    Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("Employee.xls", Encoding.UTF8).ToString());
+    //    Response.ContentType = "application/ms-excel";
+    //    this.EnableViewState = false;
+    //    StringWriter tw = new StringWriter();
+    //    HtmlTextWriter hw = new HtmlTextWriter(tw);
+    //    gv = this.GridView1;
+    //    gv.RenderControl(hw);
+    //    Response.Write(strStyle);
+
+    //    Response.Write(tw.ToString());
+    //    Response.End();
+    //    GridView1.AllowPaging = true;//恢复分页  
+    //    //为GridView重新绑定数据源  
+    //    GetData1();
+
+    //}
     protected void downloadlink(object sender, EventArgs e)
     {
-          
-            //Response.Charset = "GB2312";
-            //Response.ContentEncoding = System.Text.Encoding.UTF8;
-            //Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("Employee.xls", Encoding.UTF8).ToString());
-            //Response.ContentType = "application/ms-excel";
-            //this.EnableViewState = false;
-            //StringWriter tw = new StringWriter();
-            //HtmlTextWriter hw = new HtmlTextWriter(tw);
-            //GridView1.RenderControl(hw);
-            //Response.Write(tw.ToString());
-            //Response.End();
 
-        GridView1.AllowPaging = false;
         GetData1();
 
-        string strStyle = "<style>td{mso-number-format:\"\\@\";}</style>";
-        Response.Charset = "GB2312";
-        Response.ContentEncoding = System.Text.Encoding.UTF8;
-        Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("Employee.xls", Encoding.UTF8).ToString());
-        Response.ContentType = "application/ms-excel";
-        this.EnableViewState = false;
-        StringWriter tw = new StringWriter();
-        HtmlTextWriter hw = new HtmlTextWriter(tw);
-        gv = this.GridView1;
-        gv.RenderControl(hw);
-        Response.Write(strStyle);
 
-        Response.Write(tw.ToString());
-        Response.End();
-        GridView1.AllowPaging = true;//恢复分页  
-        //为GridView重新绑定数据源  
-        GetData1();
+        //设置EXCEL列宽
+        int[] ColumnWidth = { 10, 30, 20, 20, 20, 50, 30, 30, 30, 20, 20, 30, 30, 30};
+        //获取用户选择的excel文件名称
+        string ReportTitleName = "Authorization_List";
+        string savepath = Server.MapPath("Files/" + ReportTitleName.ToString() + ".xls");
+        //新建excel
+        Workbook wb = new Workbook();
 
+        //设置字体样式
+
+        Aspose.Cells.Style style1 = wb.Styles[wb.Styles.Add()];
+        style1.HorizontalAlignment = TextAlignmentType.Center;//文字居中
+        style1.Font.Name = "宋体";
+        style1.Font.IsBold = true;//设置粗体
+        style1.Font.Size = 12;//设置字体大小
+
+        Aspose.Cells.Style style2 = wb.Styles[wb.Styles.Add()];
+        style2.HorizontalAlignment = TextAlignmentType.Center;
+        style2.Font.Size = 10;
+
+
+        //sheet1
+        Worksheet ws = wb.Worksheets[0];
+        Cells cell = ws.Cells;
+        ws.Name = "Telephone";
+        //合并第一行单元格
+        Aspose.Cells.Range range = cell.CreateRange(0, 0, 1, ColumnWidth.Length);
+        range.Merge();
+        cell["A1"].PutValue("Authorization List"); //标题
+        //给单元格关联样式
+        cell["A1"].SetStyle(style1); //报表名字 样式
+        //设置Execl列名  可以采用单独传值
+        cell[1, 0].PutValue("Staff No.");
+        cell[1, 0].SetStyle(style2);
+        cell[1, 1].PutValue("Staff Name");
+        cell[1, 1].SetStyle(style2);
+        cell[1, 2].PutValue("Station");
+        cell[1, 2].SetStyle(style2);
+        cell[1, 3].PutValue("Dept.");
+        cell[1, 3].SetStyle(style2);
+        cell[1, 4].PutValue("Div.");
+        cell[1, 4].SetStyle(style2);
+        cell[1, 5].PutValue("Title");
+        cell[1, 5].SetStyle(style2);
+        cell[1, 6].PutValue("Date of Join");
+        cell[1, 6].SetStyle(style2);
+        cell[1, 7].PutValue("License");
+        cell[1, 7].SetStyle(style2);
+        cell[1, 8].PutValue("Category");
+        cell[1, 8].SetStyle(style2);
+        cell[1, 9].PutValue("Not JMM");
+        cell[1, 9].SetStyle(style2);
+        cell[1, 10].PutValue("Lic. Exp.");
+        cell[1, 10].SetStyle(style2);
+        cell[1, 11].PutValue("Date of Left");
+        cell[1, 11].SetStyle(style2);
+        cell[1, 12].PutValue("Date of Birth");
+        cell[1, 12].SetStyle(style2);
+        cell[1, 13].PutValue("Left");
+        cell[1, 13].SetStyle(style2);
+
+        //设置单元格内容
+        int posStart = 2;
+        int row = 0;
+
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            DataRow Drow = dt.Rows[i];
+            cell[row + posStart, 0].PutValue(Drow[1].ToString());
+            cell[row + posStart, 0].SetStyle(style2);
+            cell[row + posStart, 1].PutValue(Drow[2].ToString());
+            cell[row + posStart, 1].SetStyle(style2);
+            cell[row + posStart, 2].PutValue(Drow[6].ToString());
+            cell[row + posStart, 2].SetStyle(style2);
+            cell[row + posStart, 3].PutValue(Drow[4].ToString());
+            cell[row + posStart, 3].SetStyle(style2);
+            cell[row + posStart, 4].PutValue(Drow[5].ToString());
+            cell[row + posStart, 4].SetStyle(style2);
+            cell[row + posStart, 5].PutValue(Drow[7].ToString());
+            cell[row + posStart, 5].SetStyle(style2);
+            cell[row + posStart, 6].PutValue(Drow[9].ToString());
+            cell[row + posStart, 6].SetStyle(style2);
+            cell[row + posStart, 7].PutValue(Drow[8].ToString());
+            cell[row + posStart, 7].SetStyle(style2);
+            cell[row + posStart, 8].PutValue(Drow[3].ToString());
+            cell[row + posStart, 8].SetStyle(style2);
+            cell[row + posStart, 9].PutValue(Drow[12].ToString());
+            cell[row + posStart, 9].SetStyle(style2);
+            cell[row + posStart, 10].PutValue(Drow[10].ToString());
+            cell[row + posStart, 10].SetStyle(style2);
+            cell[row + posStart, 11].PutValue(Drow[13].ToString());
+            cell[row + posStart, 11].SetStyle(style2);
+            cell[row + posStart, 12].PutValue(Drow[14].ToString());
+            cell[row + posStart, 12].SetStyle(style2);
+            cell[row + posStart, 13].PutValue(Drow[11].ToString());
+            cell[row + posStart, 13].SetStyle(style2);
+
+            row++;
+        }
+        for (int i = 0; i < ColumnWidth.Length; i++)
+        {
+            cell.SetColumnWidth(i, Convert.ToDouble(ColumnWidth[i].ToString()));
+        }
+
+
+        Workbook wb1 = new Workbook();
+
+        //设置字体样式
+
+        Aspose.Cells.Style style11 = wb1.Styles[wb1.Styles.Add()];
+        style11.HorizontalAlignment = TextAlignmentType.Center;//文字居中
+        style11.Font.Name = "宋体";
+        style11.Font.IsBold = true;//设置粗体
+        style11.Font.Size = 12;//设置字体大小
+
+        Aspose.Cells.Style style21 = wb1.Styles[wb1.Styles.Add()];
+        style21.HorizontalAlignment = TextAlignmentType.Center;
+        style21.Font.Size = 10;
+
+
+
+        //保存在服务器
+        wb.Combine(wb1);
+        wb.Save(savepath);
+
+        FileTo(ReportTitleName);
     }
 
 
+    //下载
+    public void FileTo(string ReportTitleName)   //file文件名称
+    {
 
+
+        string path = Server.MapPath("Files/" + ReportTitleName.ToString() + ".xls");
+
+        System.IO.FileInfo file = new System.IO.FileInfo(path);
+
+        if (file.Exists)
+        {
+
+            Response.Clear();
+
+            Response.ContentType = "application/vnd.ms-excel";
+
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + Server.UrlEncode(ReportTitleName.ToString()) + ".xls");
+
+            Response.AddHeader("Content-Length", file.Length.ToString());
+
+            Response.ContentType = "application/octet-stream";
+
+            Response.Filter.Close();
+
+            Response.WriteFile(file.FullName);
+
+            Response.End();
+
+
+        }
+    }
     protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {
         string useri1 = ((LinkButton)GridView1.SelectedRow.Cells[1].FindControl("Label2")).Text;
         //  (LinkButton)GridView1.SelectedRow.Cells[1].Attributes.Add("onclick", "this.form.target='_blank'"); 
-       // Session["userNo"] = useri1;
+        // Session["userNo"] = useri1;
         ClientScript.RegisterStartupScript(GetType(), "message", "<script>window.open('Position_setting.aspx?user=" + useri1 + "','_blank')</script>");
         //Response.Redirect("Authorizationprint.aspx?staffno=" + useri1);
         //     Response.Write("<script>window.open('Authorizationprint.aspx?staffno=" + useri1 + "','_blank')</script>");

@@ -1,0 +1,16 @@
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.Form1.resources
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.Properties.Resources.resources
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.csproj.GenerateResource.Cache
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\bin\Debug\MSAS_Reminder.exe
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\bin\Debug\MSAS_Reminder.pdb
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.exe
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.pdb
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.csprojResolveAssemblyReference.cache
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.exe
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.pdb
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\bin\Debug\MSAS_Reminder.exe
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\bin\Debug\MSAS_Reminder.pdb
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.csprojResolveAssemblyReference.cache
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.Form1.resources
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.Properties.Resources.resources
+D:\Work space\VS\Visual Studio 2013\Projects\MSAS_Reminder\MSAS_Reminder\obj\Debug\MSAS_Reminder.csproj.GenerateResource.Cache

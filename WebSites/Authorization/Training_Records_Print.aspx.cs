@@ -34,7 +34,7 @@ public partial class Training_Records_Print : System.Web.UI.Page
 
         //getpersonal  info
 
-        string SQL_query_all = "SELECT A.StaffName,A.StaffID,A.Title,A.DateOfJoin,A.Division,A.Brithdate,A.License,A.LicenseExpired  from MSAS_HRInfo A where StaffID='" + staffno + "' ";
+        string SQL_query_all = "SELECT A.StaffName,A.StaffID,A.Title,A.DateOfJoin,A.Division,A.Birthdate,A.License,A.LicenseExpired  from MSAS_HRInfo A where StaffID='" + staffno + "' ";
 
         using (SqlDataReader rdr = SqlHelper.ExecuteReader(SqlHelper1.Conn, CommandType.Text, SQL_query_all))
         {

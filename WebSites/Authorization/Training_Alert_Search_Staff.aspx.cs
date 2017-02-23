@@ -55,9 +55,13 @@ public partial class Training_Alert_Search : System.Web.UI.Page
 
                 }
                 Training_Type.Items.Add("");
-                Training_Type.Items.Add("One Time");
-                Training_Type.Items.Add("Initial");
-                Training_Type.Items.Add("Recurrent");
+                Training_Type.Items.Add("General Initial");
+                Training_Type.Items.Add("General Recurrent");
+                Training_Type.Items.Add("General One Time");
+                Training_Type.Items.Add("Position Initial");
+                Training_Type.Items.Add("Position Recurrent");
+                Training_Type.Items.Add("Position One Time");
+                Training_Type.Items.Add("Other");
 
 
                 Alert.Items.Add("");
@@ -178,13 +182,17 @@ public partial class Training_Alert_Search : System.Web.UI.Page
         {
 
             case "Need Initial":
-                SQL = "select distinct * from MSAS_Course_Initial_VW ";
+                SQL = "select distinct * from MSAS_Course_Initial_VW where 1=1";
                 break;
             case "Need Recurrent":
-                SQL = "select distinct * from MSAS_Course_Recurrent_VW ";
+                SQL = "select distinct * from MSAS_Course_Recurrent_VW where 1=1";
                 break;
             default:
-                SQL = "select distinct * from MSAS_Course_I_R_VW ";
+                SQL = "select distinct * from MSAS_Course_I_R_VW where 1=1";
+                if (From.Text.Trim() == "" || To.Text.Trim() == "")
+                {
+                    SQL = SQL + "and Alert<>'OK'";
+                }
                 break;
 
 
@@ -194,13 +202,15 @@ public partial class Training_Alert_Search : System.Web.UI.Page
 
 
 
-        SQL = SQL + "where 1=1";
+      
         if (Staff_Id.Text.Trim() != "")
         {
             SQL = SQL + "and StaffID ='" + Staff_Id.Text + "' ";
 
         }
 
+
+      
         if (Station.SelectedItem.Value != "")
         {
             SQL = SQL + "and Station ='" + Station.SelectedItem.Value + "' ";
@@ -328,13 +338,17 @@ public partial class Training_Alert_Search : System.Web.UI.Page
         {
 
             case "Need Initial":
-                SQL = "select distinct * from MSAS_Course_Initial_VW ";
+                SQL = "select distinct * from MSAS_Course_Initial_VW where 1=1";
                 break;
             case "Need Recurrent":
-                SQL = "select distinct * from MSAS_Course_Recurrent_VW ";
+                SQL = "select distinct * from MSAS_Course_Recurrent_VW where 1=1";
                 break;
             default:
-                SQL = "select distinct * from MSAS_Course_I_R_VW ";
+                SQL = "select distinct * from MSAS_Course_I_R_VW where 1=1 ";
+                if (From.Text.Trim() == "" || To.Text.Trim() == "")
+                {
+                    SQL = SQL + "and Alert<>'OK'";
+                }
                 break;
 
 
@@ -344,7 +358,7 @@ public partial class Training_Alert_Search : System.Web.UI.Page
 
 
 
-        SQL = SQL + "where 1=1";
+      
         if (Staff_Id.Text.Trim() != "")
         {
             SQL = SQL + "and StaffID ='" + Staff_Id.Text + "' ";
@@ -522,7 +536,7 @@ public partial class Training_Alert_Search : System.Web.UI.Page
         Cells cell = ws.Cells;
         ws.Name = "Telephone";
         //合并第一行单元格
-        Range range = cell.CreateRange(0, 0, 1, ColumnWidth.Length);
+        Aspose.Cells.Range range = cell.CreateRange(0, 0, 1, ColumnWidth.Length);
         range.Merge();
         cell["A1"].PutValue(ReportTitleName); //标题
         //给单元格关联样式

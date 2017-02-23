@@ -81,11 +81,11 @@
                         <table style="margin-left: auto; margin-right: auto;">
                             <tr>
                                 <td>Class Name:
-                                    <asp:TextBox ID="Class_Name" runat="server" onblur="if(this.value.replace(/^ +| +$/g,'')=='')alert('Class Name is required')"></asp:TextBox>
+                                    <asp:TextBox ID="Class_Name" MaxLength="80" runat="server" onblur="if(this.value.replace(/^ +| +$/g,'')=='')alert('Class Name is required')"></asp:TextBox>
                                 </td>
                                 <td>Course Ref
                                     <asp:DropDownList ID="Course_Ref" runat="server" AutoPostBack="True" OnSelectedIndexChanged="Course_Ref_SelectedIndexChanged"></asp:DropDownList>
-                                </td>
+                                (调整该字段会导致下面的资料丢失)</td>
 
                                 <td>Batch:
                                     <asp:TextBox ID="Batch" runat="server" ></asp:TextBox>
@@ -117,7 +117,7 @@
                                 <td>Location:
                                    <asp:TextBox ID="Location" runat="server"></asp:TextBox>
                                 </td>
-                                 <td>Training Organization<asp:TextBox ID="Training_Organization" runat="server"></asp:TextBox></td>
+                                 <td>Training Organization<asp:TextBox ID="Training_Organization" MaxLength="25" runat="server"></asp:TextBox></td>
                             
                         
                             </tr>

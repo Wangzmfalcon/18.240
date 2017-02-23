@@ -14,6 +14,27 @@
 
     <script src="js/jquery.js" type="text/javascript"></script>
     <script src="js/jquery-ui.js" type="text/javascript"></script>
+    <style type="text/css">
+        div.tolong:hover {
+            text-overflow: inherit;
+            overflow: visible;
+        }
+
+
+        div.tolongorg {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 160px;
+        }
+
+        div.tolongclass {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 460px;
+        }
+    </style>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -39,107 +60,114 @@
               
                 %>
 
-            <div class="printarea">
-                <div class="printtitle">
-                    <div class=" col-md-2">
-                        <img src="images/logo1.gif" style="margin-left: 6px; margin-top: 6px; float: left;" />
+                <div class="printarea">
+                    <div class="printtitle">
+                        <div class=" col-md-2">
+                            <img src="images/logo1.gif" style="margin-left: 6px; margin-top: 6px; float: left;" />
+                        </div>
+                        <div class=" col-md-10" style="position: relative; top: 5px">
+                            <div style="width: 100%; text-align: center; height: 35px; line-height: 35px; font-family: Microsoft YaHei,SimHei,Cambria, Helvetica, sans-serif; font-size: 20px">Engineering and Maintenance Staff Training Record</div>
+                            <%--<div style="width: 100%; text-align: center; height: 15px; line-height: 15px; font-family: Microsoft YaHei,SimHei,Cambria, Helvetica, sans-serif; font-size: 10px">Quality Monitoring System and Staff Record</div>--%>
+                        </div>
+
+                        <hr style="clear: both; position: absolute; width: 100%; bottom: 5px" />
+
                     </div>
-                    <div class=" col-md-10">
-                        <div style="width: 100%; text-align: center; height: 35px; line-height: 35px; font-family: Microsoft YaHei,SimHei,Cambria, Helvetica, sans-serif; font-size: 20px">Engineering and Maintenance Staff Training Record</div>
-                        <%--<div style="width: 100%; text-align: center; height: 15px; line-height: 15px; font-family: Microsoft YaHei,SimHei,Cambria, Helvetica, sans-serif; font-size: 10px">Quality Monitoring System and Staff Record</div>--%>
-                    </div>
-                    <hr style="clear: both;" />
 
-                </div>
+                    <div class="printbody">
+                        <div style="width: 100%; height: 90px">
+                            <table style="width: 100%; border-collapse: collapse" id="basicinfo">
+                                <tr>
+                                    <td class="col-md-2">Staff Name:</td>
+                                    <td class="col-md-2"><%=staffname%> </td>
+                                    <td class="col-md-4"></td>
+                                    <td class="col-md-2" style="text-align: right">Staff Number:</td>
+                                    <td class="col-md-2" style="text-align: right"><%=staffid%> </td>
+                                </tr>
 
-                <div class="printbody">
-                    <div style="width: 100%; height: 120px">
-                        <table style="width: 100%; border-collapse: collapse" id="basicinfo">
-                            <tr>
-                                <td class="col-md-2">Staff Name:</td>
-                                <td class="col-md-2"><%=staffname%> </td>
-                                <td class="col-md-4"></td>
-                                <td class="col-md-2" style="text-align: right">Staff Number:</td>
-                                <td class="col-md-2" style="text-align: right"><%=staffid%> </td>
-                            </tr>
-
-                            <tr>
-                                <td class="col-md-2">Job Title:</td>
-                                <td class="col-md-2"><%=title%> </td>
-                                <td class="col-md-4"></td>
-                                <td class="col-md-2" style="text-align: right">Date Joined:</td>
-                                <td class="col-md-2" style="text-align: right"><%=datejoin%></td>
-                            </tr>
-                            <tr>
-                                <td class="col-md-2">Divsion:</td>
-                                <td class="col-md-2"><%=div%></td>
-                                <td class="col-md-4"></td>
-                                <td class="col-md-2" style="text-align: right">Date of Birth:</td>
-                                <td class="col-md-2" style="text-align: right"><%=birthdate%></td>
-                            </tr>
-                            <tr style="border-top: 1px solid #000000;">
+                                <tr>
+                                    <td class="col-md-2">Job Title:</td>
+                                    <td class="col-md-2"><%=title%> </td>
+                                    <td class="col-md-4"></td>
+                                    <td class="col-md-2" style="text-align: right">Date Joined:</td>
+                                    <td class="col-md-2" style="text-align: right"><%=datejoin%></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-2">Divsion:</td>
+                                    <td class="col-md-2"><%=div%></td>
+                                    <td class="col-md-4"></td>
+                                    <td class="col-md-2" style="text-align: right">Date of Birth:</td>
+                                    <td class="col-md-2" style="text-align: right"><%=birthdate%></td>
+                                </tr>
+                                <%--    <tr style="border-top: 1px solid #000000;">
                                 <td class="col-md-2">License Number:</td>
                                 <td class="col-md-2"><%=license%></td>
                                 <td class="col-md-4"></td>
                                 <td class="col-md-2" style="text-align: right">License Expiry Date:</td>
                                 <td class="col-md-2" style="text-align: right"><%=licenseexpiry%></td>
+                            </tr>--%>
+                            </table>
+                        </div>
+                        <hr />
+
+                        <table style="width: 100%; border-collapse: collapse; text-align: left" id="trainingdata">
+                            <tr style="border-bottom: 1px solid #000000; height: 30px">
+                                <td>Class Name</td>
+                                <td>Course Ref</td>
+                                <td>Training Date</td>
+                                <td>Training Method</td>
+                                <td>Duation</td>
+                                <td>Location</td>
+                                <td>Training Organization</td>
                             </tr>
-                        </table>
-                    </div>
-                    <hr />
 
-                    <table style="width: 100%; border-collapse: collapse; text-align: left" id="trainingdata">
-                        <tr style="border-bottom: 1px solid #000000; height: 30px">
-                            <th>Class Name</th>
-                            <th>Course Ref</th>
-                            <th>Training Date</th>
-                            <th>Training Method</th>
-                            <th>Duation</th>
-                            <th>Location</th>
-                            <th>Training Organization</th>
-                        </tr>
-
-                        <%for (int j = 1; j <= pagesize; j++)
-                          {
-                              if (i == count && j > remainder && remainder != 0)
+                            <%for (int j = 1; j <= pagesize; j++)
                               {
-                        %>
-                        <tr>
+                                  if (i == count && j > remainder && remainder != 0)
+                                  {
+                            %>
+                            <tr>
 
-                            <td colspan="7" style="text-align: center; border-top: 1px solid #000000;">None Follows</td>
-                        </tr>
-                        <%
+                                <td colspan="7" style="text-align: center; border-top: 1px solid #000000;">None Follows</td>
+                            </tr>
+                            <%
                                   break;
                               }
                               ;%>
-                        <tr>
-                            <td><%=dt.Rows[(i-1)*5+j-1]["Class Name"] %></td>
-                            <td><%=dt.Rows[(i-1)*5+j-1]["Course Ref"] %></td>
-                            <td><%=dt.Rows[(i-1)*5+j-1]["Training Date"] %></td>
-                            <td><%=dt.Rows[(i-1)*5+j-1]["Training Method"] %></td>
-                            <td><%=dt.Rows[(i-1)*5+j-1]["Duation"] %></td>
-                            <td><%=dt.Rows[(i-1)*5+j-1]["Location"] %></td>
-                            <td><%=dt.Rows[(i-1)*5+j-1]["Training Organization"] %></td>
+                            <tr>
+                                <td>
+                                    <div class="tolong tolongclass"><%=dt.Rows[(i-1)*pagesize+j-1]["Class Name"] %></div>
+                                    </td>
+                                <td><%=dt.Rows[(i-1)*pagesize+j-1]["Course Ref"] %></td>
+                                <td><%=dt.Rows[(i-1)*pagesize+j-1]["Training Date"] %></td>
+                                <td><%=dt.Rows[(i-1)*pagesize+j-1]["Training Method"] %></td>
+                                <td><%=dt.Rows[(i-1)*pagesize+j-1]["Duation"] %></td>
+                                <td><%=dt.Rows[(i-1)*pagesize+j-1]["Location"] %></td>
+                                <td>
+                                    <div class=" tolong tolongorg">
+                                        <%=dt.Rows[(i-1)*pagesize+j-1]["Training Organization"] %>
+                                    </div>
+                                </td>
 
 
-                        </tr>
+                            </tr>
 
-                        <%}%>
-                    </table>
+                            <%}%>
+                        </table>
 
+                    </div>
+                    <hr />
+
+                    <div class="printfoot">
+                        <div class="col-md-2">Print Date:<%=today %></div>
+                        <div class="col-md-1" style="float: right">Page <%=i%> of <%=count%></div>
+
+                    </div>
                 </div>
-                <hr />
 
-                <div class="printfoot">
-                    <div class="col-md-2">Print Date:<%=today %></div>
-                    <div class="col-md-1" style="float: right">Page <%=i%> of <%=count%></div>
-
-                </div>
             </div>
-
-        </div>
-        <div class="pagebreak"></div>
-        <%}%>
+            <div class="pagebreak"></div>
+            <%}%>
     </form>
 
     <script>

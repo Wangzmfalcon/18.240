@@ -1,0 +1,8 @@
+c:\users\itdwzm\documents\visual studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\obj\Debug\MSAS_Training_Reminder.Properties.Resources.resources
+c:\users\itdwzm\documents\visual studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\obj\Debug\MSAS_Training_Reminder.csproj.GenerateResource.Cache
+c:\users\itdwzm\documents\visual studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\bin\Debug\MSAS_Training_Reminder.exe
+c:\users\itdwzm\documents\visual studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\bin\Debug\MSAS_Training_Reminder.pdb
+c:\users\itdwzm\documents\visual studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\obj\Debug\MSAS_Training_Reminder.exe
+c:\users\itdwzm\documents\visual studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\obj\Debug\MSAS_Training_Reminder.pdb
+c:\users\itdwzm\documents\visual studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\obj\Debug\MSAS_Training_Reminder.Form1.resources
+C:\Users\itdwzm\Documents\Visual Studio 2013\Projects\MSAS_Training_Reminder\MSAS_Training_Reminder\obj\Debug\MSAS_Training_Reminder.csprojResolveAssemblyReference.cache

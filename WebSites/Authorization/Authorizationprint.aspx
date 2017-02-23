@@ -182,7 +182,7 @@
                 position: relative;
                 left: 3mm;
                 font-family: arial;
-                margin-top: 220px;
+                margin-top: 200px;
             }
 
             #verson1 {
@@ -614,6 +614,10 @@
                 <li>
                     <p>QS-P: Painting Qualifying Staff                                                        </p>
                 </li>
+                <p>&nbsp;</p>
+                <li>
+                    <p>GRI*:  Good Receipt Inspection (Except Tools, Equipment, Engine & APU, C-duct, Translating Sleeve and Landing Gear Assembly)                                                      </p>
+                </li>
                 </br>
 
 			<p><b>Note: </b></p>
@@ -703,6 +707,10 @@
                 <p>&nbsp;</p>
                 <li>
                     <p>QS-P: Painting Qualifying Staff                                                        </p>
+                </li>
+                <p>&nbsp;</p>
+                <li>
+                    <p>GRI*:  Good Receipt Inspection (Except Tools, Equipment, Engine & APU, C-duct, Translating Sleeve and Landing Gear Assembly)                                                      </p>
                 </li>
                 </br>
                 <p><b>Note: </b></p>

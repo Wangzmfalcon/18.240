@@ -130,7 +130,7 @@ public partial class Training_Records_Search : System.Web.UI.Page
                         Course.SelectedValue = Request.QueryString["Course"].ToString();
 
 
-                    if (Request.QueryString["Course_re"].ToString() != "")
+                    if (Request.QueryString["Course_ref"].ToString() != "")
                         Course_re.SelectedValue = Request.QueryString["Course_ref"].ToString();
 
 
@@ -260,20 +260,20 @@ public partial class Training_Records_Search : System.Web.UI.Page
         next.NavigateUrl = null;
         if (Count > 1)
         {
-            this.first.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=1&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_re=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
-            this.last.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=" + Convert.ToString(Count) + "&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_re=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
+            this.first.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=1&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_ref=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
+            this.last.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=" + Convert.ToString(Count) + "&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_ref=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
         }
 
         if (!pds.IsFirstPage)
         {
 
-            up.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=" + Convert.ToString(CurPage - 1) + "&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_re=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
+            up.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=" + Convert.ToString(CurPage - 1) + "&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_ref=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
         }
 
         if (!pds.IsLastPage)
         {
 
-            next.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=" + Convert.ToString(CurPage + 1) + "&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_re=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
+            next.NavigateUrl = Request.CurrentExecutionFilePath + "?Page=" + Convert.ToString(CurPage + 1) + "&Staffid=" + Staff_Id.Text + "&Station=" + Station.SelectedItem.Value + "&Dept=" + Department.SelectedItem.Value + "&Div=" + Division.SelectedItem.Value + "&From=" + From.Text + "&To=" + To.Text + "&Course=" + Course.SelectedItem.Value + "&Course_ref=" + Course_re.SelectedItem.Value + "&Course_Type=" + Training_Type.SelectedItem.Value + "&Class=" + Class.Text + "&Active=" + Active.Checked;
         }
 
 
@@ -317,7 +317,7 @@ public partial class Training_Records_Search : System.Web.UI.Page
         Cells cell = ws.Cells;
         ws.Name = "Telephone";
         //合并第一行单元格
-        Range range = cell.CreateRange(0, 0, 1, ColumnWidth.Length);
+        Aspose.Cells.Range range = cell.CreateRange(0, 0, 1, ColumnWidth.Length);
         range.Merge();
         cell["A1"].PutValue(ReportTitleName); //标题
         //给单元格关联样式

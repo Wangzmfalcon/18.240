@@ -72,10 +72,18 @@
                     <div id="welcome" style="width: 500px; height: 25px; text-align: right; font-size: 14px; float: left;">
                         <asp:Label ID="Label1" runat="server" Text=""></asp:Label>
                     </div>
-
+                    
+                         
+                   
                     <div id="updatelog" style="width: 950px; margin-left: 50px">
                         <h1>Position Setting</h1>
                         Staff No.<a><%=userstring%></a>
+                      
+                    </div>
+                    <div>
+
+                         <a   style="margin-left:100px;margin-top:10px; width: 150px; height: 15px; background-color: #fff; display: inline-block; padding: 5px; text-align: center; border-radius: 5px; border: 1px solid #C0C0C0; vertical-align: central; padding-top: 7px; cursor: pointer" href="Position_Gap.aspx?userid=<%=userstring%>">Position Gap Analysis</a>
+
                     </div>
                     <div style="margin-top: 30px; margin-left: 100px; margin-right: auto">
 

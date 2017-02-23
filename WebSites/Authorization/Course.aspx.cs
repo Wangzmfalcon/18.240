@@ -77,6 +77,31 @@ public partial class Course : System.Web.UI.Page
         try
         {
             int Order_int = Convert.ToInt32(Course_id.Text);
+
+
+            //检查是否存在
+            string SQL_insert = "  INSERT INTO  MSAS_Course (id,Course) values (@id,@Position)";
+
+            SqlParameter[] parms = new SqlParameter[]{
+                     new SqlParameter("@id",  SqlDbType.Int),
+                     new SqlParameter("@Position", SqlDbType.VarChar, 50)
+      
+               };
+            parms[0].Value = Course_id.Text;
+            parms[1].Value = Course_name.Text;
+            using (SqlConnection conn = new SqlConnection(SqlHelper1.Conn))
+            {
+                int actionrows = SqlHelper.ExecuteNonQuery(conn, CommandType.Text, SQL_insert, parms);
+                if (actionrows > 0)
+                {
+                    ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('Insert data success');</script>");
+                    Response.AddHeader("Refresh", "0");
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('Insert data faild');</script>");
+                }
+            }
         }
         catch
         {
@@ -84,29 +109,7 @@ public partial class Course : System.Web.UI.Page
             flag = "N";
             ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('Id should be number.');</script>");
         }
-        //检查是否存在
-        string SQL_insert = "  INSERT INTO  MSAS_Course (id,Course) values (@id,@Position)";
-
-        SqlParameter[] parms = new SqlParameter[]{
-                     new SqlParameter("@id",  SqlDbType.Int),
-                     new SqlParameter("@Position", SqlDbType.VarChar, 50)
       
-               };
-        parms[0].Value = Course_id.Text;
-        parms[1].Value = Course_name.Text;
-        using (SqlConnection conn = new SqlConnection(SqlHelper1.Conn))
-        {
-            int actionrows = SqlHelper.ExecuteNonQuery(conn, CommandType.Text, SQL_insert, parms);
-            if (actionrows > 0)
-            {
-                ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('Insert data success');</script>");
-                Response.AddHeader("Refresh", "0");
-            }
-            else
-            {
-                ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('Insert data faild');</script>");
-            }
-        }
     }
     protected void delete_Click(object sender, EventArgs e)
     {

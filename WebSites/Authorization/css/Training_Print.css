@@ -47,7 +47,8 @@
 }
 
 .printtitle {
-    height: 50px;
+    position:relative;
+    height: 80px;
     width: 1000px;
 }
 
@@ -116,7 +117,7 @@
 #trainingdata tr  {
     height: 45px;
     line-height: 30px;
-    font-size: 13px;
+    font-size: 10px;
     font-family: Microsoft YaHei,SimHei,Cambria, Helvetica, sans-serif;
 }
 

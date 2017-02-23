@@ -57,10 +57,12 @@ public partial class Class : System.Web.UI.Page
             Training_Type.Items.Add("Classroom");
             Training_Type.Items.Add("Self Study");
             Training_Type.Items.Add("OJT");
+            Training_Type.Items.Add("LEC");
+            Training_Type.Items.Add("RS");
             Training_Type.Items.Add("Other");
 
 
-           
+
 
 
 
@@ -78,30 +80,30 @@ public partial class Class : System.Web.UI.Page
                         Course_Ref.SelectedValue = Convert.ToString(rdr.GetSqlValue(1)).Trim();
                         Batch.Text = Convert.ToString(rdr.GetSqlValue(2));
                         Instructor.Text = Convert.ToString(rdr.GetSqlValue(3));
-                        Training_Date.Text = Convert.ToString(rdr.GetSqlValue(4)); 
-                        if(rdr.IsDBNull(5))
-                        { 
-                            Training_Time.Text =""; 
+                        Training_Date.Text = Convert.ToString(rdr.GetSqlValue(4));
+                        if (rdr.IsDBNull(5))
+                        {
+                            Training_Time.Text = "";
                         }
                         else
-                        Training_Time.Text = Convert.ToString(rdr.GetSqlValue(5)); 
+                            Training_Time.Text = Convert.ToString(rdr.GetSqlValue(5));
 
                         Training_Type.SelectedValue = Convert.ToString(rdr.GetSqlValue(6)).Trim();
-                        Location.Text = Convert.ToString(rdr.GetSqlValue(7)); 
-                        Training_Organization.Text = Convert.ToString(rdr.GetSqlValue(8)); 
-   
+                        Location.Text = Convert.ToString(rdr.GetSqlValue(7));
+                        Training_Organization.Text = Convert.ToString(rdr.GetSqlValue(8));
+
 
                     }
 
                 }
 
-        }
+            }
 
 
 
 
 
-       
+
 
 
 
@@ -131,24 +133,45 @@ public partial class Class : System.Web.UI.Page
         {
             using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
             {
-                sqlcmm.CommandText = "select D.StaffID,C.StaffName                                                  "
-                                    + "from MSAS_HRInfo C join                                       "
-                                    + "(select distinct(S.StaffID)      "
-                                    + "from MSAS_Course_Reference A,MSAS_Course_Ref_Range B,MSAS_Position_S S                "
-                                    + "where A.ID=B.ID                                           ";
-                string classid = Course_Ref.SelectedItem.Value;
-                if (classid != "" && classid != null)
+
+                 string classid = Course_Ref.SelectedItem.Value;
+                string Course_Type = "";
+                string sql_Course_big = "SELECT Training_Type from MSAS_Course_Reference   where Course_Ref='" + classid + "'";
+
+                using (SqlDataReader rdr = SqlHelper.ExecuteReader(sqlstr, CommandType.Text, sql_Course_big))
                 {
-                    sqlcmm.CommandText += "and A.Course_Ref='" + classid + "'";
+                    if (rdr.Read())
+                    {
+                        Course_Type = Convert.ToString(rdr.GetSqlValue(0));
+                    }
+
                 }
-                sqlcmm.CommandText += "and S.Position=B.Position) D on                                              "
-                                    + "C.StaffID=D.StaffID                                           "
-                                    + "where  1=1                                          "
-                                    + "and C.HRstatus=0                                       ";
+               
+                sqlcmm.CommandText = "select C.StaffID,C.StaffName                                                  "
+                                    + "from MSAS_HRInfo C ";
+                if (Course_Type != "Other" && Course_Type != "Position Initial" && Course_Type != "Position One Time" && Course_Type != "General One Time")
+                {
+                    sqlcmm.CommandText += "join   "
+                                        + "(select distinct(S.StaffID)      "
+                                        + "from MSAS_Course_Reference A,MSAS_Course_Ref_Range B,MSAS_Position_S S                "
+                                        + "where A.ID=B.ID                                           ";
+
+                    if (classid != "" && classid != null)
+                    {
+                        sqlcmm.CommandText += "and A.Course_Ref='" + classid + "'";
+                    }
+                    sqlcmm.CommandText += "and S.Position=B.Position) D on                                              "
+                                        + "C.StaffID=D.StaffID                                           ";
+
+
+                }
+                sqlcmm.CommandText += "where  1=1                                          ";
+                if (id == "")
+                    sqlcmm.CommandText += "and C.HRstatus=0                                       ";
 
 
 
-                sqlcmm.CommandText += "order by D.StaffID";
+                sqlcmm.CommandText += "order by C.StaffID";
 
 
 
@@ -225,7 +248,7 @@ public partial class Class : System.Web.UI.Page
             insertCmd.Parameters.Add("@Training_type", SqlDbType.VarChar, 50);
             insertCmd.Parameters.Add("@Location", SqlDbType.VarChar, 100);
             insertCmd.Parameters.Add("@Training_Organization", SqlDbType.VarChar, 100);
-            
+
 
 
             insertCmd.Parameters["@ID"].Value = id;
@@ -244,7 +267,7 @@ public partial class Class : System.Web.UI.Page
             insertCmd.Parameters["@Training_type"].Value = Training_Type.SelectedItem.Value.ToString().Trim();
             insertCmd.Parameters["@Location"].Value = Location.Text;
             insertCmd.Parameters["@Training_Organization"].Value = Training_Organization.Text;
-            
+
             cn1.Open();
             int flag = insertCmd.ExecuteNonQuery();
             if (flag > 0)
@@ -269,7 +292,7 @@ public partial class Class : System.Web.UI.Page
 
 
 
-                    sqlcmm1.CommandText = "Delete MSAS_Class_Range where ID='"+id+"'";
+                    sqlcmm1.CommandText = "Delete MSAS_Class_Range where ID='" + id + "'";
                     sqlcnn1.Open();
                     int j = sqlcmm1.ExecuteNonQuery();
                     sqlcnn1.Close();
@@ -320,7 +343,7 @@ public partial class Class : System.Web.UI.Page
             insertCmd.Parameters.Add("@Training_type", SqlDbType.VarChar, 50);
             insertCmd.Parameters.Add("@Location", SqlDbType.VarChar, 100);
             insertCmd.Parameters.Add("@Training_Organization", SqlDbType.VarChar, 100);
-          
+
 
 
             insertCmd.Parameters["@ID"].Value = newid;
@@ -339,7 +362,7 @@ public partial class Class : System.Web.UI.Page
             insertCmd.Parameters["@Training_type"].Value = Training_Type.SelectedItem.Value.ToString().Trim();
             insertCmd.Parameters["@Location"].Value = Location.Text;
             insertCmd.Parameters["@Training_Organization"].Value = Training_Organization.Text;
-         
+
             cn1.Open();
             int flag = insertCmd.ExecuteNonQuery();
             if (flag > 0)
@@ -355,12 +378,12 @@ public partial class Class : System.Web.UI.Page
 
             cn1.Close();
 
-    
+
 
 
         }
 
-      
+
 
 
         SqlConnection cn2 = new SqlConnection(sqlstr);//创建数据库连接对象
@@ -401,7 +424,10 @@ public partial class Class : System.Web.UI.Page
 
 
         }
-        Response.Redirect("Class_search.aspx");
+        //ClientScript.RegisterStartupScript(GetType(), "message", "<script>window.history.back(-2);</script>");
+        //Response.Redirect("Class_search.aspx");
+        ClientScript.RegisterStartupScript(GetType(), "message", "<script>if(confirm('Data saved , press \"OK\" to close this page?')){window.close(); }else{ window.close();}</script>");
+        //Response.Write("<script>window.close();</script>");
     }
     protected void Course_Ref_SelectedIndexChanged(object sender, EventArgs e)
     {

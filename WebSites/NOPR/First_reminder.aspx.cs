@@ -44,13 +44,13 @@ public partial class First_reminder : System.Web.UI.Page
         //读取数据
         SqlConnection conn = new SqlConnection();
         DataSet ds = new DataSet();
-        SqlDataAdapter sda = new SqlDataAdapter("select * from NOPR_Data where 1=1", SqlHelper.Conn);
+        SqlDataAdapter sda = new SqlDataAdapter("select StaffID,Name,Result,Punch_Date,Punch_Time,Email,GM_Email,Other_Email  from NOPR_Data where 1=1", SqlHelper.Conn);
         sda.Fill(ds, "Email_table");
         PagedDataSource pds = new PagedDataSource();
         pds.DataSource = ds.Tables["Email_table"].DefaultView;
         datacount.Text = ds.Tables["Email_table"].Rows.Count.ToString();
         pds.AllowPaging = true;//允许分页
-        pds.PageSize = 10;//单页显示项数
+        pds.PageSize = 5;//单页显示项数
         int CurPage;
         if (Request.QueryString["Page"] != null)
             CurPage = Convert.ToInt32(Request.QueryString["Page"]);
@@ -122,7 +122,9 @@ public partial class First_reminder : System.Web.UI.Page
         //添加收件人       
         MyEmailMessage.To.Add(new MailAddress(mail));
         //CC GM
+        if (gmmail!="")
         MyEmailMessage.CC.Add(new MailAddress(gmmail));
+        if (othermail != "")
         MyEmailMessage.CC.Add(new MailAddress(othermail));
         //CC HR经理
         //addcc(MyEmailMessage);
@@ -162,7 +164,7 @@ public partial class First_reminder : System.Web.UI.Page
                 txbody = txbody + "<tr>";
                 txbody = txbody + "<td style=\"background-color:yellow;\">" + Convert.ToString(rdr.GetSqlValue(0)) + " (" + Convert.ToString(rdr.GetSqlValue(2)) + " ) </td>";
                 txbody = txbody + "<td>on</td>";
-                txbody = txbody + "<td style=\"background-color:yellow;\">" + Convert.ToString(rdr.GetSqlValue(1)) + "</td>";
+                txbody = txbody + "<td style=\"background-color:yellow;\">" + Convert.ToDateTime(Convert.ToString(rdr.GetSqlValue(1))).ToString("dd-MM-yyyy") + "</td>";
                 txbody = txbody + "</tr>";
 
 
@@ -195,7 +197,7 @@ public partial class First_reminder : System.Web.UI.Page
         AlternateView htmlBody = AlternateView.CreateAlternateViewFromString(txbody, null, "text/html");
 
         //图片添加
-        LinkedResource lrImage = new LinkedResource(Server.MapPath(Request.ApplicationPath) + "/images/2.jpg", "image/gif");
+        LinkedResource lrImage = new LinkedResource(Server.MapPath(Request.ApplicationPath) + "/images/2.jpg", "image/jpg");
         lrImage.ContentId = "last";
         htmlBody.LinkedResources.Add(lrImage);
 
@@ -329,7 +331,7 @@ public partial class First_reminder : System.Web.UI.Page
         DataSet OleDsExcle = new DataSet();//建立DS
 
 
-        String sql = "SELECT [Employee ID],[Employee Name],[Verified Result] ,[Roster Punch Date],[Roster Punch Time], [Email],[GM's Email],[Other's Email]FROM  [Sheet1$A1:GG20000]";//可是更改Sheet名称，比如sheet2，等等   
+        String sql = "SELECT [Employee ID],[Employee Name],[Verified Result] ,[Roster Punch Date],[Roster Punch Time], [Email],[GM's Email],[Other's Email] FROM  [Sheet1$A1:GG20000]";//可是更改Sheet名称，比如sheet2，等等   
         OleDbDataAdapter OleDaExcel = new OleDbDataAdapter(sql, OleConn);//读出数据
         OleDaExcel.Fill(OleDsExcle, "dt");//DS的表名字
 
@@ -380,33 +382,28 @@ public partial class First_reminder : System.Web.UI.Page
         for (int i = 0; i < ds.Tables["dt"].Rows.Count; i++)
         {
             DataRow row = ds.Tables["dt"].Rows[i];
-            if (row[0].ToString() != "")
-            {
-                parms[0].Value = row[0].ToString();
-                parms[1].Value = row[1].ToString();
-                parms[2].Value = row[2].ToString();
-                string a = row[3].ToString().Trim();
-                parms[3].Value = Convert.ToDateTime(row[3].ToString().Trim()).ToShortDateString();
-                try
-                {
-                    DateTime rosterpunchtime = Convert.ToDateTime(row[4].ToString());
-                    parms[4].Value = rosterpunchtime.ToString("HH:mm:ss");
-                }
-                catch (Exception ex)
-                {
-                    parms[4].Value = row[4].ToString();
+            parms[0].Value = row[0].ToString();
+            parms[1].Value = row[1].ToString();
+            parms[2].Value = row[2].ToString();
+            string a = row[3].ToString().Trim();
+            parms[3].Value = Convert.ToDateTime(row[3].ToString().Trim()).ToShortDateString();
+          
+            try {
 
-                }
-                parms[5].Value = row[5].ToString();
-                parms[6].Value = row[6].ToString();
-                parms[7].Value = row[7].ToString();
-                using (SqlConnection conn = new SqlConnection(SqlHelper.Conn))
-                {
-                    SqlHelper.ExecuteNonQuery(conn, CommandType.Text, SQL_insert, parms);
-                }
-            
+                parms[4].Value = Convert.ToDateTime(row[4].ToString().Trim()).ToString("HH:mm:ss");
+            }
+            catch(Exception ex)
+            {
+              parms[4].Value = row[4].ToString();
             }
           
+            parms[5].Value = row[5].ToString();
+            parms[6].Value = row[6].ToString();
+            parms[7].Value = row[7].ToString();
+            using (SqlConnection conn = new SqlConnection(SqlHelper.Conn))
+            {
+                SqlHelper.ExecuteNonQuery(conn, CommandType.Text, SQL_insert, parms);
+            }
         }
         return flag;
     }

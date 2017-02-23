@@ -582,13 +582,13 @@
                                         
                                         <asp:TemplateField HeaderText="Date of Brith">
                                             <EditItemTemplate>
-                                                <asp:TextBox ID="TextBrithdate" runat="server" Text='<%# Bind("Brithdate") %>'
+                                                <asp:TextBox ID="TextBirthdate" runat="server" Text='<%# Bind("Birthdate") %>'
                                                     MaxLength="80" Rows="3" Height="20px"
                                                     Width="80px" onClick="WdatePicker()"
                                                     Style="margin-left: 10px"></asp:TextBox>
                                             </EditItemTemplate>
                                             <ItemTemplate>
-                                                <asp:Label ID="LabelBrithdate" Width="80" runat="server" Text='<%# Bind("Brithdate") %>'></asp:Label>
+                                                <asp:Label ID="LabelBirthdate" Width="80" runat="server" Text='<%# Bind("Birthdate") %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
 

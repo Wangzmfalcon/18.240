@@ -19,7 +19,7 @@
     <!--JS-->
     <script language="javascript" type="text/javascript" src="My97Datepicker/WdatePicker.js"></script>
 
-    <title>Course Setting</title>
+    <title>Class search</title>
     <style>
         #GridView1 {
             font-size: 15px;
@@ -143,10 +143,10 @@
 
                                         <asp:TemplateField HeaderText="Training Date">
                                             <EditItemTemplate>
-                                                <asp:TextBox ID="txClass_Type" MaxLength="200" Width="200" runat="server" Text='<%# Bind("Training_Date1") %>'></asp:TextBox>
+                                                <asp:TextBox ID="txTrainD_Type" MaxLength="200" Width="200" runat="server" Text='<%# Bind("Training_Date1") %>'></asp:TextBox>
                                             </EditItemTemplate>
                                             <ItemTemplate>
-                                                <asp:Label ID="laClass_Type" CommandName="Select" Width="200" CausesValidation="False" runat="server" Text='<%# Bind("Training_Date1") %>'></asp:Label>
+                                                <asp:Label ID="laTrainD_Type" CommandName="Select" Width="200" CausesValidation="False" runat="server" Text='<%# Bind("Training_Date1") %>'></asp:Label>
                                             </ItemTemplate>
                                         </asp:TemplateField>
 

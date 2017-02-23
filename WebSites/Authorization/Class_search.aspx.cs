@@ -240,8 +240,10 @@ public partial class Class_search : System.Web.UI.Page
         string Course_ID = ((Label)GridView1.SelectedRow.Cells[1].FindControl("Label1")).Text;
         //  (LinkButton)GridView1.SelectedRow.Cells[1].Attributes.Add("onclick", "this.form.target='_blank'"); 
         Session["Class_ID"] = Course_ID;
-        Response.Redirect("Class.aspx");
-        // ClientScript.RegisterStartupScript(GetType(), "message", "<script>window.open('Course.aspx')</script>");
+        //Response.Redirect("Class.aspx");
+        //Server.Transfer("Class.aspx");
+        ClientScript.RegisterStartupScript(GetType(), "message", "<script>window.open('Class.aspx','newwindow','') </script>");
+        //ClientScript.RegisterStartupScript(GetType(), "message", "<script>window.open('Course.aspx')</script>");
         //Response.Redirect("Authorizationprint.aspx?staffno=" + useri1);
         //     Response.Write("<script>window.open('Authorizationprint.aspx?staffno=" + useri1 + "','_blank')</script>");
     }

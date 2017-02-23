@@ -54,10 +54,13 @@ public partial class Training_Alert_Search : System.Web.UI.Page
 
                 }
                 Training_Type.Items.Add("");
-                Training_Type.Items.Add("One Time");
-                Training_Type.Items.Add("Initial");
-                Training_Type.Items.Add("Recurrent");
-
+                Training_Type.Items.Add("General Initial");
+                Training_Type.Items.Add("General Recurrent");
+                Training_Type.Items.Add("General One Time");
+                Training_Type.Items.Add("Position Initial");
+                Training_Type.Items.Add("Position Recurrent");
+                Training_Type.Items.Add("Position One Time");
+                Training_Type.Items.Add("Other");
 
                 Alert.Items.Add("");
                 Alert.Items.Add("Need Initial");
@@ -169,23 +172,22 @@ public partial class Training_Alert_Search : System.Web.UI.Page
         {
 
             case "Need Initial":
-                SQL = "select distinct * from MSAS_Course_Initial_VW ";
+                SQL = "select distinct * from MSAS_Course_Initial_VW where 1=1";
                 break;
             case "Need Recurrent":
-                SQL = "select distinct * from MSAS_Course_Recurrent_VW ";
+                SQL = "select distinct * from MSAS_Course_Recurrent_VW where 1=1";
                 break;
             default:
-                SQL = "select distinct * from MSAS_Course_I_R_VW ";
+                SQL = "select distinct * from MSAS_Course_I_R_VW where 1=1";
+                if (From.Text.Trim() == "" || To.Text.Trim() == "")
+                {
+                    SQL = SQL + "and Alert<>'OK'";
+                }
                 break;
 
 
         }
 
-
-
-
-
-        SQL = SQL + "where 1=1";
         if (Staff_Id.Text.Trim() != "")
         {
             SQL = SQL + "and StaffID ='" + Staff_Id.Text + "' ";
@@ -319,23 +321,21 @@ public partial class Training_Alert_Search : System.Web.UI.Page
         {
 
             case "Need Initial":
-                SQL = "select distinct * from MSAS_Course_Initial_VW ";
+                SQL = "select distinct * from MSAS_Course_Initial_VW where 1=1";
                 break;
             case "Need Recurrent":
-                SQL = "select distinct * from MSAS_Course_Recurrent_VW ";
+                SQL = "select distinct * from MSAS_Course_Recurrent_VW where 1=1";
                 break;
             default:
-                SQL = "select distinct * from MSAS_Course_I_R_VW ";
+                SQL = "select distinct * from MSAS_Course_I_R_VW where 1=1 ";
+                if (From.Text.Trim() == "" || To.Text.Trim() == "")
+                {
+                    SQL = SQL + "and Alert<>'OK'";
+                }
                 break;
 
 
         }
-
-
-
-
-
-        SQL = SQL + "where 1=1";
         if (Staff_Id.Text.Trim() != "")
         {
             SQL = SQL + "and StaffID ='" + Staff_Id.Text + "' ";
@@ -477,8 +477,8 @@ public partial class Training_Alert_Search : System.Web.UI.Page
     protected void Download_Click(object sender, EventArgs e)
     {
 
-        string[] title = { "Staff ID", "Staff Name", "Station", "Divion", "Class", "Batch", "Course", "Course Refence", "Last Training Date", "Next Due" };
-        int[] ColumnWidth = { 20, 50, 20, 20, 50, 20, 100, 50, 30, 30 };
+        string[] title = { "Staff ID", "Staff Name", "Station", "Divion", "Class", "Batch", "Course", "Course Refence", "Last Training Date","Status", "Next Due" };
+        int[] ColumnWidth = { 20, 50, 20, 20, 50, 20, 100, 50, 30, 30, 30 };
         downloadexcel(ds.Tables["Report"], title, ColumnWidth, "Training_Alert");
     }
 
@@ -551,8 +551,10 @@ public partial class Training_Alert_Search : System.Web.UI.Page
             cell[row + posStart, 7].SetStyle(style2);
             cell[row + posStart, 8].PutValue(Convert.ToDateTime(Drow["Training_Date"]).ToString("yyyy-MM-dd"));
             cell[row + posStart, 8].SetStyle(style2);
-            cell[row + posStart, 9].PutValue(Convert.ToDateTime(Drow["Training_Required_Date"]).ToString("yyyy-MM-dd"));
+            cell[row + posStart, 9].PutValue(Drow["Alert"].ToString());
             cell[row + posStart, 9].SetStyle(style2);
+            cell[row + posStart, 10].PutValue(Convert.ToDateTime(Drow["Training_Required_Date"]).ToString("yyyy-MM-dd"));
+            cell[row + posStart, 10].SetStyle(style2);
 
 
             row++;

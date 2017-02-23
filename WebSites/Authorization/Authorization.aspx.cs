@@ -13,10 +13,11 @@ using System.Xml.Linq;
 using System.Text;
 using System.Drawing;
 using System.IO;
-
+using Aspose.Cells;//excel
 public partial class Authorization : System.Web.UI.Page
 {
     GridView gv = new GridView();
+    DataTable dt = new DataTable();
     string sqlstr = ConfigurationManager.ConnectionStrings["ConnectionString1"].ConnectionString;
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -31,6 +32,8 @@ public partial class Authorization : System.Web.UI.Page
             {
                 GetData();
             }
+            BttLogin.Attributes.Add("onclick", "return Jmmcheck()");
+         
 
         }
     }
@@ -165,8 +168,8 @@ public partial class Authorization : System.Web.UI.Page
         {
             using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
             {
-                sqlcmm.CommandText = "select b.StaffID,b.HRstatus,b.StaffName, a.Seq,a.StaffID,a.Project,a.Range,a.Level,(DATENAME(dd,a.ExpireDate)+'-'+SUBSTRING(DATENAME(mm,a.ExpireDate),0,4)+'-'+DATENAME(yyyy,a.ExpireDate) )AS ExpireDate,a.Vaild,a.Remarks,a.stamp from MSAS_AuthorizationList a,MSAS_HRInfo b where a.Status!=2 and a.StaffID=b.StaffID and b.HRstatus=0";
-                DataTable dt = new DataTable();
+                sqlcmm.CommandText = "select b.StaffID,b.HRstatus,b.StaffName,b.Station,b.Division, a.Seq,a.StaffID,a.Project,a.Range,a.Level,(DATENAME(dd,a.ExpireDate)+'-'+SUBSTRING(DATENAME(mm,a.ExpireDate),0,4)+'-'+DATENAME(yyyy,a.ExpireDate) )AS ExpireDate,a.Vaild,a.Remarks,a.stamp from MSAS_AuthorizationList a,MSAS_HRInfo b where a.Status!=2 and a.StaffID=b.StaffID and b.HRstatus=0";
+             
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlcmm);
                 adapter.Fill(dt);
                 this.GridView1.DataSource = dt;
@@ -621,7 +624,7 @@ public partial class Authorization : System.Web.UI.Page
         {
             using (SqlCommand sqlcmm = sqlcnn.CreateCommand())
             {
-                sqlcmm.CommandText = "select a.Seq,a.StaffID,b.StaffName,a.Project,a.Range,a.Level,(DATENAME(dd,a.ExpireDate)+'-'+SUBSTRING(DATENAME(mm,a.ExpireDate),0,4)+'-'+DATENAME(yyyy,a.ExpireDate) )AS ExpireDate,a.Vaild,a.Remarks,a.stamp,b.StaffID,b.HRstatus,b.Department,b.Division,b.Station from MSAS_AuthorizationList a,MSAS_HRInfo b where a.Status!=2 and a.StaffID like @StaffID and a.Project =(case when @Project=''then a.Project else @Project end) and  a.Range =(case when @Range=''then a.Range else @Range end) and a.Level =(case when @Level=''then a.Level else @Level end) and a.stamp like @stamp and b.Department like @Department and b.Division like @Division and b.Station like @Station and a.StaffID=b.StaffID and b.HRstatus=0 and (Vaild = @Vaild or Vaild = @Vaild1)  ";
+                sqlcmm.CommandText = "select a.Seq,a.StaffID,b.StaffName,b.Station,b.Division,a.Project,a.Range,a.Level,(DATENAME(dd,a.ExpireDate)+'-'+SUBSTRING(DATENAME(mm,a.ExpireDate),0,4)+'-'+DATENAME(yyyy,a.ExpireDate) )AS ExpireDate,a.Vaild,a.Remarks,a.stamp,b.StaffID,b.HRstatus,b.Department from MSAS_AuthorizationList a,MSAS_HRInfo b where a.Status!=2 and a.StaffID like @StaffID and a.Project =(case when @Project=''then a.Project else @Project end) and  a.Range =(case when @Range=''then a.Range else @Range end) and a.Level =(case when @Level=''then a.Level else @Level end) and a.stamp like @stamp and b.Department like @Department and b.Division like @Division and b.Station like @Station and a.StaffID=b.StaffID and b.HRstatus=0 and (Vaild = @Vaild or Vaild = @Vaild1)  ";
                 sqlcmm.Parameters.AddWithValue("@StaffID", "%" + this.txtName.Text + "%");
                 sqlcmm.Parameters.AddWithValue("@stamp", "%" + this.tstamp.Text + "%");
                 sqlcmm.Parameters.AddWithValue("@Project",  this.tdepart.SelectedValue );
@@ -647,7 +650,7 @@ public partial class Authorization : System.Web.UI.Page
                 }
                 sqlcnn.Open();
                 SqlDataAdapter adapter = new SqlDataAdapter(sqlcmm);
-                DataTable dt = new DataTable();
+                
                 adapter.Fill(dt);
                 this.GridView1.DataSource = dt;
                 this.GridView1.DataBind();
@@ -662,43 +665,184 @@ public partial class Authorization : System.Web.UI.Page
     {
         GetData1();
     }
-
     protected void downloadlink(object sender, EventArgs e)
     {
 
-        //Response.Charset = "GB2312";
-        //Response.ContentEncoding = System.Text.Encoding.UTF8;
-        //Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("Authorization.xls", Encoding.UTF8).ToString());
-        //Response.ContentType = "application/ms-excel";
-        //this.EnableViewState = false;
-        //StringWriter tw = new StringWriter();
-        //HtmlTextWriter hw = new HtmlTextWriter(tw);
-        //GridView1.RenderControl(hw);
-        //Response.Write(tw.ToString());
-        //Response.End();
-
-
-        GridView1.AllowPaging = false;
         GetData1();
 
-        string strStyle = "<style>td{mso-number-format:\"\\@\";}</style>";
-        Response.Charset = "GB2312";
-        Response.ContentEncoding = System.Text.Encoding.UTF8;
-        Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("Authorization.xls", Encoding.UTF8).ToString());
-        Response.ContentType = "application/ms-excel";
-        this.EnableViewState = false;
-        StringWriter tw = new StringWriter();
-        HtmlTextWriter hw = new HtmlTextWriter(tw);
-        gv = this.GridView1;
-        gv.RenderControl(hw);
-        Response.Write(strStyle);
 
-        Response.Write(tw.ToString());
-        Response.End();
-        GridView1.AllowPaging = true;//恢复分页  
-        //为GridView重新绑定数据源  
-        GetData1();
+        //设置EXCEL列宽
+        int[] ColumnWidth = { 10, 20, 20, 20, 50, 50, 20, 30, 30, 50 ,20};
+        //获取用户选择的excel文件名称
+        string ReportTitleName = "Authorization_List";
+        string savepath = Server.MapPath("Files/" + ReportTitleName.ToString() + ".xls");
+        //新建excel
+        Workbook wb = new Workbook();
+
+        //设置字体样式
+
+        Aspose.Cells.Style style1 = wb.Styles[wb.Styles.Add()];
+        style1.HorizontalAlignment = TextAlignmentType.Center;//文字居中
+        style1.Font.Name = "宋体";
+        style1.Font.IsBold = true;//设置粗体
+        style1.Font.Size = 12;//设置字体大小
+
+        Aspose.Cells.Style style2 = wb.Styles[wb.Styles.Add()];
+        style2.HorizontalAlignment = TextAlignmentType.Center;
+        style2.Font.Size = 10;
+
+
+        //sheet1
+        Worksheet ws = wb.Worksheets[0];
+        Cells cell = ws.Cells;
+        ws.Name = "Telephone";
+        //合并第一行单元格
+        Aspose.Cells.Range range = cell.CreateRange(0, 0, 1, ColumnWidth.Length);
+        range.Merge();
+        cell["A1"].PutValue("Authorization List"); //标题
+        //给单元格关联样式
+        cell["A1"].SetStyle(style1); //报表名字 样式
+        //设置Execl列名  可以采用单独传值
+        cell[1, 0].PutValue("Staff No.");
+        cell[1, 0].SetStyle(style2);
+        cell[1, 1].PutValue("Staff Name");
+        cell[1, 1].SetStyle(style2);
+        cell[1, 2].PutValue("Station");
+        cell[1, 2].SetStyle(style2);
+        cell[1, 3].PutValue("Division");
+        cell[1, 3].SetStyle(style2);
+        cell[1, 4].PutValue("Subject");
+        cell[1, 4].SetStyle(style2);
+        cell[1, 5].PutValue("Rating");
+        cell[1, 5].SetStyle(style2);
+        cell[1, 6].PutValue("Level");
+        cell[1, 6].SetStyle(style2);
+        cell[1, 7].PutValue("Stamp");
+        cell[1, 7].SetStyle(style2);
+        cell[1, 8].PutValue("ExpireDate");
+        cell[1, 8].SetStyle(style2);
+        cell[1, 9].PutValue("Remarks");
+        cell[1, 9].SetStyle(style2);
+        cell[1, 10].PutValue("Valid");
+        cell[1, 10].SetStyle(style2);
+
+
+
+        //设置单元格内容
+        int posStart = 2;
+        int row = 0;
+
+        for (int i = 0; i < dt.Rows.Count; i++)
+        {
+            DataRow Drow = dt.Rows[i];
+            cell[row + posStart, 0].PutValue(Drow[1].ToString());
+            cell[row + posStart, 0].SetStyle(style2);
+            cell[row + posStart, 1].PutValue(Drow[2].ToString());
+            cell[row + posStart, 1].SetStyle(style2);
+            cell[row + posStart, 2].PutValue(Drow[3].ToString());
+            cell[row + posStart, 2].SetStyle(style2);
+            cell[row + posStart, 3].PutValue(Drow[4].ToString());
+            cell[row + posStart, 3].SetStyle(style2);
+            cell[row + posStart, 4].PutValue(Drow[5].ToString());
+            cell[row + posStart, 4].SetStyle(style2);
+            cell[row + posStart, 5].PutValue(Drow[6].ToString());
+            cell[row + posStart, 5].SetStyle(style2);
+            cell[row + posStart, 6].PutValue(Drow[7].ToString());
+            cell[row + posStart, 6].SetStyle(style2);
+            cell[row + posStart, 7].PutValue(Drow[11].ToString());
+            cell[row + posStart, 7].SetStyle(style2);
+            cell[row + posStart, 8].PutValue(Convert.ToDateTime(Drow[8].ToString()).ToString("dd-MMM-yyyy", System.Globalization.DateTimeFormatInfo.InvariantInfo));
+            cell[row + posStart, 8].SetStyle(style2);
+            cell[row + posStart, 9].PutValue(Drow[10].ToString());
+            cell[row + posStart, 9].SetStyle(style2);
+            cell[row + posStart, 10].PutValue(Drow[9].ToString());
+            cell[row + posStart, 10].SetStyle(style2);
+
+            row++;
+        }
+        for (int i = 0; i < ColumnWidth.Length; i++)
+        {
+            cell.SetColumnWidth(i, Convert.ToDouble(ColumnWidth[i].ToString()));
+        }
+
+
+        Workbook wb1 = new Workbook();
+
+        //设置字体样式
+
+        Aspose.Cells.Style style11 = wb1.Styles[wb1.Styles.Add()];
+        style11.HorizontalAlignment = TextAlignmentType.Center;//文字居中
+        style11.Font.Name = "宋体";
+        style11.Font.IsBold = true;//设置粗体
+        style11.Font.Size = 12;//设置字体大小
+
+        Aspose.Cells.Style style21 = wb1.Styles[wb1.Styles.Add()];
+        style21.HorizontalAlignment = TextAlignmentType.Center;
+        style21.Font.Size = 10;
+
+
+
+        //保存在服务器
+        wb.Combine(wb1);
+        wb.Save(savepath);
+
+        FileTo(ReportTitleName);
     }
+
+    //下载
+    public void FileTo(string ReportTitleName)   //file文件名称
+    {
+
+
+        string path = Server.MapPath("Files/" + ReportTitleName.ToString() + ".xls");
+
+        System.IO.FileInfo file = new System.IO.FileInfo(path);
+
+        if (file.Exists)
+        {
+
+            Response.Clear();
+
+            Response.ContentType = "application/vnd.ms-excel";
+
+            Response.AddHeader("Content-Disposition", "attachment; filename=" + Server.UrlEncode(ReportTitleName.ToString()) + ".xls");
+
+            Response.AddHeader("Content-Length", file.Length.ToString());
+
+            Response.ContentType = "application/octet-stream";
+
+            Response.Filter.Close();
+
+            Response.WriteFile(file.FullName);
+
+            Response.End();
+
+
+        }
+    }
+    //protected void downloadlink(object sender, EventArgs e)
+    //{
+    //    GridView1.AllowPaging = false;
+    //    GetData1();
+
+    //    string strStyle = "<style>td{mso-number-format:\"\\@\";}</style>";
+    //    Response.Charset = "GB2312";
+    //    Response.ContentEncoding = System.Text.Encoding.UTF8;
+    //    Response.AppendHeader("Content-Disposition", "attachment;filename=" + HttpUtility.UrlEncode("Authorization.xls", Encoding.UTF8).ToString());
+    //    Response.ContentType = "application/ms-excel";
+    //    this.EnableViewState = false;
+    //    StringWriter tw = new StringWriter();
+    //    HtmlTextWriter hw = new HtmlTextWriter(tw);
+    //    gv = this.GridView1;
+    //    gv.RenderControl(hw);
+    //    Response.Write(strStyle);
+
+    //    Response.Write(tw.ToString());
+    //    Response.End();
+    //    GridView1.AllowPaging = true;//恢复分页  
+    //    //为GridView重新绑定数据源  
+    //    GetData1();
+    //}
 
     protected void GridView1_SelectedIndexChanged(object sender, EventArgs e)
     {

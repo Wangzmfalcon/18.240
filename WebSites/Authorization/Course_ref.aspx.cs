@@ -55,9 +55,13 @@ public partial class Course_ref : System.Web.UI.Page
         Training_Unit.Items.Add("Year");
         Training_Unit.Items.Add("Month");
         Training_Unit.Items.Add("Day");
-        Training_Type.Items.Add("One Time");
-        Training_Type.Items.Add("Initial");
-        Training_Type.Items.Add("Recurrent");
+        Training_Type.Items.Add("General Initial");
+        Training_Type.Items.Add("General Recurrent");
+        Training_Type.Items.Add("General One Time");
+        Training_Type.Items.Add("Position Initial");
+        Training_Type.Items.Add("Position Recurrent");
+        Training_Type.Items.Add("Position One Time");
+        Training_Type.Items.Add("Other");
         //判断是否是review
         id = Session["Course_Ref"].ToString();
 

@@ -160,6 +160,7 @@
                                         <th>Course</th>
                                         <th>Course Ref</th>
                                         <th>Last Training Date</th>
+                                         <th>Status</th>
                                         <th>Next Due</th>
                                         <%-- <th>Delete</th>--%>
                                     </tr>
@@ -175,6 +176,7 @@
                                     <td><font><%#Eval("Course")%></font></td>
                                     <td><font><%#Eval("Course_Ref")%></font></td>
                                     <td><font><%#Convert.ToDateTime(Eval("Training_Date")).ToString("dd-MMM-yyyy", System.Globalization.DateTimeFormatInfo.InvariantInfo)%></font></td>
+                                    <td><font><%#Eval("Alert")%></font></td>
                                     <td><font><%#Convert.ToDateTime(Eval("Training_Required_Date")).ToString("dd-MMM-yyyy", System.Globalization.DateTimeFormatInfo.InvariantInfo)%></font></td>
 
                                 </tr>
